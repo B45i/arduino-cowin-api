@@ -11,30 +11,33 @@ const sampleUserAgent =
 
 const port = process.env.PORT || 5000;
 
-async function getSlotsInfo() {
+async function getSlotsInfo({ districtID, date, minAge }) {
+    minAge = minAge === '18' ? 18 : 45;
     try {
         const result = await axios.get(
-            `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=1&date=11-05-2021`,
+            `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=${districtID}&date=${date}`,
             { headers: { 'User-Agent': sampleUserAgent } }
         );
-        return (result.data.centers || []).map(center => {
-            return (center.sessions || []).map(session => {
-                if (
-                    session.min_age_limit <= 45 &&
-                    session.available_capacity > 0
-                ) {
-                    return session;
-                }
-            });
-        });
+        return (result.data.centers || [])
+            .map(center => {
+                return (center.sessions || [])
+                    .map(session => {
+                        return session.min_age_limit <= minAge &&
+                            session.available_capacity > 0
+                            ? session
+                            : null;
+                    })
+                    .filter(x => x);
+            })
+            .filter(x => x && x.length);
     } catch (error) {
         throw error;
     }
 }
 
-app.get('/', async (req, res) => {
+app.get('/api', async (req, res) => {
     try {
-        const slots = await getSlotsInfo();
+        const slots = await getSlotsInfo(req.query);
         if (!slots.length) {
             return res.status(404).send('No Slots Available !!!');
         }
