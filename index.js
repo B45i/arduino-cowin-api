@@ -43,8 +43,8 @@ app.get('/api', async (req, res) => {
         }
         return res.json(slots);
     } catch (err) {
-        console.error(err.message);
-        return res.status(500).send('Something went wrong !!!');
+        console.error('ERROR', err.message);
+        return res.status(500).send(err.message); // todo remove
     }
 });
 
