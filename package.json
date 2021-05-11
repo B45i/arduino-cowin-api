@@ -4,9 +4,10 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "node index.js",
+        "start-old": "node index.js",
         "dev": "nodemon index.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "start": "./node_modules/.bin/netlify-lambda serve src",
+        "build": "NODE_ENV=production ./node_modules/.bin/netlify-lambda build src"
     },
     "author": "B45i",
     "license": "ISC",
@@ -14,6 +15,8 @@
         "axios": "^0.21.1",
         "cors": "^2.8.5",
         "express": "^4.17.1",
-        "nodemon": "^2.0.7"
+        "netlify-lambda": "^2.0.6",
+        "nodemon": "^2.0.7",
+        "serverless-http": "^2.7.0"
     }
 }

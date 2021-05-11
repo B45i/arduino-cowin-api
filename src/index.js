@@ -1,10 +1,13 @@
 const axios = require('axios');
 const express = require('express');
 const cors = require('cors');
+const serverless = require('serverless-http');
 
 const app = express();
-app.use(cors());
-app.options('*', cors());
+const router = express.Router();
+
+// app.use(cors());
+// app.options('*', cors());
 
 const sampleUserAgent =
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36';
@@ -36,7 +39,7 @@ async function getSlotsInfo({ districtID, date, minAge }) {
     }
 }
 
-app.get('/api', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const slots = await getSlotsInfo(req.query);
         if (!slots.length) {
@@ -49,6 +52,11 @@ app.get('/api', async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`App listening at http://localhost:${port}`);
-});
+// app.listen(port, () => {
+//     console.log(`App listening at http://localhost:${port}`);
+// });
+
+app.use(`/.netlify/functions/api`, router);
+
+module.exports = app;
+module.exports.handler = serverless(app);
