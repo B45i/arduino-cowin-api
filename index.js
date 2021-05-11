@@ -14,10 +14,11 @@ const port = process.env.PORT || 5000;
 async function getSlotsInfo({ districtID, date, minAge }) {
     minAge = minAge === '18' ? 18 : 45;
     try {
-        const result = await axios.get(
-            `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=${districtID}&date=${date}`,
-            { headers: { 'User-Agent': sampleUserAgent } }
-        );
+        const url = `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=${districtID}&date=${date}`;
+        console.log('DEBUG URL', { url });
+        const result = await axios.get(url, {
+            headers: { 'User-Agent': sampleUserAgent },
+        });
         return (result.data.centers || [])
             .map(center => {
                 return (center.sessions || [])
@@ -44,7 +45,7 @@ app.get('/api', async (req, res) => {
         return res.json(slots);
     } catch (err) {
         console.error('ERROR', err.message);
-        return res.status(500).send(err.message); // todo remove
+        return res.status(500).send('Something went wrong !!!');
     }
 });
 
