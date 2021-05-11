@@ -14,7 +14,7 @@ const port = process.env.PORT || 5000;
 async function getSlotsInfo({ districtID, date, minAge }) {
     minAge = minAge === '18' ? 18 : 45;
     try {
-        const url = `http://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=${districtID}&date=${date}`;
+        const url = `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=${districtID}&date=${date}`;
         console.log('DEBUG URL', { url });
         const result = await axios.get(url, {
             headers: { 'User-Agent': sampleUserAgent },
