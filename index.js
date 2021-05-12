@@ -1,6 +1,7 @@
 const axios = require('axios');
 const express = require('express');
 const cors = require('cors');
+const fetch = require('node-fetch');
 
 const app = express();
 app.use(cors());
@@ -16,10 +17,14 @@ async function getSlotsInfo({ districtID, date, minAge }) {
     try {
         const url = `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=${districtID}&date=${date}`;
         console.log('DEBUG URL', { url });
-        const result = await axios.get(url, {
+        // const result = await axios.get(url, {
+        // headers: { 'User-Agent': sampleUserAgent },
+        // });
+        const response = await fetch(url, {
             headers: { 'User-Agent': sampleUserAgent },
         });
-        return (result.data.centers || [])
+        const data = await response.json();
+        return (data.centers || [])
             .map(center => {
                 return (center.sessions || [])
                     .map(session => {
