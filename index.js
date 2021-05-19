@@ -16,15 +16,10 @@ async function getSlotsInfo({ districtID, date, minAge }) {
     minAge = minAge === '18' ? 18 : 45;
     try {
         const url = `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=${districtID}&date=${date}`;
-        console.log('DEBUG URL', { url });
-        // const result = await axios.get(url, {
-        // headers: { 'User-Agent': sampleUserAgent },
-        // });
-        const response = await fetch(url, {
+        const result = await axios.get(url, {
             headers: { 'User-Agent': sampleUserAgent },
         });
-        const data = await response.json();
-        return (data.centers || [])
+        return (result.data.centers || [])
             .map(center => {
                 return (center.sessions || [])
                     .map(session => {
@@ -41,7 +36,7 @@ async function getSlotsInfo({ districtID, date, minAge }) {
     }
 }
 
-app.get('/api', async (req, res) => {
+app.get('/', async (req, res) => {
     try {
         const slots = await getSlotsInfo(req.query);
         if (!slots.length) {
