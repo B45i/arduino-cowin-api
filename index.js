@@ -19,18 +19,15 @@ async function getSlotsInfo({ districtID, date, minAge }) {
         const result = await axios.get(url, {
             headers: { 'User-Agent': sampleUserAgent },
         });
-        return (result.data.centers || [])
-            .map(center => {
-                return (center.sessions || [])
-                    .map(session => {
-                        return session.min_age_limit <= minAge &&
-                            session.available_capacity > 0
-                            ? session
-                            : null;
-                    })
-                    .filter(x => x);
-            })
-            .filter(x => x && x.length);
+        return (result.data.centers || []).filter(
+            center =>
+                center.sessions.filter(session => {
+                    return (
+                        session.min_age_limit <= minAge &&
+                        session.available_capacity > 0
+                    );
+                }).length
+        );
     } catch (error) {
         throw error;
     }
